@@ -1,0 +1,42 @@
+version: "3.3"
+
+volumes:
+        jenkins-home:
+        mongo:
+
+services:
+        ui:
+                image: ui:latest
+                build: ./ui
+                ports:
+                        - target: 80
+                          published: 80
+                depends_on:
+                        - jenkins
+                        - api
+
+        api:
+                image: api:latest
+                build: ./api
+                depends_on:
+                        - mongo
+
+        mongo:
+                image: mongo:latest
+                volumes:
+                        - type: volume
+                          source: mongo
+                          target: /data/db
+
+        jenkins:
+                image: bobbykataria/jenkins:latest
+                volumes:
+                        - type: volume
+                          source: ./jenkins-home
+                          target: /var/jenkins_home
+                        - type: bind
+                          source: /var/run/docker.sock
+                          target: /var/run/docker.sock
+                environment:
+                        - JENKINS_OPTS="--prefix=/jenkins"
+
