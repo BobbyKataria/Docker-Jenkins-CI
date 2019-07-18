@@ -1,7 +1,7 @@
-FROM node:latest
+FROM node:12-alpine
 WORKDIR /app
-COPY ./package.json /app
+COPY . .
 RUN npm install
 COPY . /app
 EXPOSE 8080
-ENTRYPOINT ["node", "Index.js"]
+ENTRYPOINT ["./entrypoint.sh"]
